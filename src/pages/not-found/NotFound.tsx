@@ -1,10 +1,10 @@
-export const Home = () =>
+export const NotFound= () =>
 {
   return (
     <div className="container-fluid">
       <div className="row">
         <div className="col-12">
-          <h2>List Products</h2>
+          <h2>Not Found</h2>
         </div>
       </div>
     </div>
