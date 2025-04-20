@@ -1,3 +1,17 @@
 .active {
   text-decoration: underline;
 }
+ul.nav {
+  align-items: center;
+  height: 100%;
+}
+
+ul.nav li.nav-item a:hover {
+  text-decoration: underline;
+}
+
+@media (min-width: 1200px) {
+  .h1, h1 {
+    font-size: 2.2rem;
+  }
+}

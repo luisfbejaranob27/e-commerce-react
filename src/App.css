@@ -1,6 +1,51 @@
+:root {
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: rgba(255, 255, 255, 0.87);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+[data-bs-theme=dark] {
+  --bs-body-bg: #242424;
+
+  .neumorphism-div {
+    background: #2f2f2f;
+    box-shadow:
+      -5px -5px 10px #212121,
+      10px 10px 20px #0a0a0a;
+  }
+}
+
+[data-bs-theme=light] {
+  --bs-body-bg: #d3d3d3;
+
+  .neumorphism-div {
+    background: #a2a2a2;
+    box-shadow:
+      -5px -5px 10px #4d4d4d,
+      10px 10px 20px #282828;
+  }
+
+  .form-control {
+    border-color: #4d4d4d;
+  }
+}
+
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
   padding: 12px 0;
+}
+
+.neumorphism-div {
+  padding: 12px;
+  margin: 1.2rem 0 2rem;
 }

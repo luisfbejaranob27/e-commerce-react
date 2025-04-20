@@ -1,11 +1,47 @@
 import {NavLink} from "react-router-dom";
 import "./NavBar.css"
 
+type NavItem = {
+  name: string;
+  path: string;
+};
+
+type renderNavProps = {
+  itemsNavMain?: NavItem[];
+  itemsNavUser?: NavItem[];
+  itemsNavCategories?: NavItem[];
+};
+
+const renderNav = ({ itemsNavMain, itemsNavUser, itemsNavCategories }: renderNavProps) => {
+  const itemsNav = [...(itemsNavMain || []), ...(itemsNavUser || []), ...(itemsNavCategories || [])];
+
+  return (
+    <>
+      {itemsNav.map((item, index) => (
+        <li className="nav-item" key={index}>
+          {item.path.startsWith('#') ? (
+            <a className="nav-link" data-bs-toggle="collapse" href={item.path}>
+              {item.name}
+            </a>
+          ) : (
+            <NavLink className="nav-link" to={item.path}>
+              {item.name}
+            </NavLink>
+          )}
+        </li>
+      ))}
+    </>
+  );
+};
+
 type NavBarProps = {
   brand: string
+  itemsNavMain: NavItem[]
+  itemsNavUser: NavItem[]
+  itemsNavCategories: NavItem[]
 }
 
-export const NavBar = ({ brand }: NavBarProps) =>
+export const NavBar = ({ brand, itemsNavMain, itemsNavUser, itemsNavCategories }: NavBarProps) =>
 {
   return (
     <>
@@ -15,14 +51,7 @@ export const NavBar = ({ brand }: NavBarProps) =>
             <div className="col-2"><a className="navbar-brand" href="#"><h1>{brand}</h1></a></div>
             <div className="col-3">
               <ul className="nav">
-                <li className="nav-item">
-                  <NavLink className={"nav-link"} to='/'>
-                    Home
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <a className="nav-link" data-bs-toggle="collapse" href="#collapseCategories">Categories</a>
-                </li>
+                {renderNav({itemsNavMain})}
               </ul>
             </div>
             <div className="col-3">
@@ -32,35 +61,14 @@ export const NavBar = ({ brand }: NavBarProps) =>
             </div>
             <div className="col-4">
               <ul className="nav justify-content-end">
-                <li className="nav-item">
-                  <NavLink className={"nav-link"} to='/my-orders'>
-                    Orders
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink className={"nav-link"} to='/my-account'>
-                    Account
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink className={"nav-link"} to='/my-cart'>
-                    Cart
-                  </NavLink>
-                </li>
-                <li className="nav-item">
-                  <NavLink className={"nav-link"} to='/sign-out'>
-                    Sing out
-                  </NavLink>
-                </li>
+                {renderNav({itemsNavUser})}
               </ul>
             </div>
           </div>
           <div className="collapse" id="collapseCategories">
-            <nav className="nav">
-              <NavLink className={"nav-link"} to='/electronics'>
-                Electronics
-              </NavLink>
-            </nav>
+            <ul className="nav">
+              {renderNav({itemsNavCategories})}
+            </ul>
           </div>
         </div>
       </nav>

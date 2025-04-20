@@ -28,11 +28,32 @@ const AppRoutes = () =>
   ]);
 }
 
+type NavItem = {
+  name: string;
+  path: string;
+};
+
+const itemsNavMain: NavItem[] = [
+  { name: 'Home', path: '/' },
+  { name: 'Categories', path: '#collapseCategories' },
+];
+
+const itemsNavUser: NavItem[] = [
+  { name: 'Account', path: '/my-account' },
+  { name: 'Orders', path: '/my-orders' },
+  { name: 'Cart', path: '/my-cart' },
+  { name: 'Sign out', path: '/sign-out' },
+];
+
+const itemsNavCategories: NavItem[] = [
+  { name: 'Electronics', path: '/electronics' },
+]
+
 export const App = () =>
 {
   return (
     <BrowserRouter>
-      <NavBar brand={"E Commerce"} />
+      <NavBar brand={"E Commerce"} itemsNavMain={itemsNavMain} itemsNavUser={itemsNavUser} itemsNavCategories={itemsNavCategories} />
       <AppRoutes />
       <ThemeController />
     </BrowserRouter>
