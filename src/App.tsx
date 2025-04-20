@@ -39,6 +39,7 @@ const itemsNavMain: NavItem[] = [
 ];
 
 const itemsNavUser: NavItem[] = [
+  { name: 'Search', path: '#collapseSearch' },
   { name: 'Account', path: '/my-account' },
   { name: 'Orders', path: '/my-orders' },
   { name: 'Cart', path: '/my-cart' },
@@ -47,6 +48,7 @@ const itemsNavUser: NavItem[] = [
 
 const itemsNavCategories: NavItem[] = [
   { name: 'Electronics', path: '/electronics' },
+  { name: 'Clothes', path: '/clothes' },
 ]
 
 export const App = () =>

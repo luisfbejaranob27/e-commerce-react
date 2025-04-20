@@ -21,7 +21,7 @@ const renderNav = ({ itemsNavMain, itemsNavUser, itemsNavCategories }: renderNav
         <li className="nav-item" key={index}>
           {item.path.startsWith('#') ? (
             <a className="nav-link" data-bs-toggle="collapse" href={item.path}>
-              {item.name}
+              {item.name == 'Search' ? <i className="bi bi-search"></i> : item.name}
             </a>
           ) : (
             <NavLink className="nav-link" to={item.path}>
@@ -49,17 +49,12 @@ export const NavBar = ({ brand, itemsNavMain, itemsNavUser, itemsNavCategories }
         <div className="container-fluid">
           <div className="row">
             <div className="col-2"><a className="navbar-brand" href="#"><h1>{brand}</h1></a></div>
-            <div className="col-3">
+            <div className="col-5" id="main-nav">
               <ul className="nav">
                 {renderNav({itemsNavMain})}
               </ul>
             </div>
-            <div className="col-3">
-              <form role="search">
-                <input className="form-control col-3" type="search" placeholder="Search" aria-label="Search"/>
-              </form>
-            </div>
-            <div className="col-4">
+            <div className="col-5">
               <ul className="nav justify-content-end">
                 {renderNav({itemsNavUser})}
               </ul>
@@ -69,6 +64,11 @@ export const NavBar = ({ brand, itemsNavMain, itemsNavUser, itemsNavCategories }
             <ul className="nav">
               {renderNav({itemsNavCategories})}
             </ul>
+          </div>
+          <div className="collapse" id="collapseSearch">
+            <form role="search">
+              <input className="form-control col-3" type="search" placeholder="Search" aria-label="Search"/>
+            </form>
           </div>
         </div>
       </nav>
