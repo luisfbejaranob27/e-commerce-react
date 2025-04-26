@@ -1,13 +1,18 @@
+import { Item } from "../../models/Item.ts";
 import "./Card.css"
-import {Item} from "../../models/Item.ts";
 
-export const Card = ({ item }: { item: Item }) =>
+type CardProps = {
+  item: Item;
+  onClick?: () => void;
+}
+
+export const Card = ({item, onClick}: CardProps) =>
 {
   const { name, price, imageUrl } = item;
   const imageSrc = imageUrl ?? "./src/assets/default-product.png";
 
   return (
-    <div className="card h-100">
+    <div className="card h-100" onClick={onClick} style={{ cursor: 'pointer' }}>
       <img src={imageSrc} className="card-img-top" alt={name} />
       <div className="add-icon">
         <i className="bi bi-plus-lg"></i>

@@ -1,14 +1,16 @@
-import {useEffect, useState} from "react";
-import {Card} from "../../components/card/Card.tsx";
-import {mapUserResponse} from "../../utils/ItemMapper.ts";
-import {Item} from "../../models/Item.ts";
+import { useEffect, useState } from "react";
+import { Card } from "../../components/card/Card.tsx";
+import { mapUserResponse } from "../../utils/ItemMapper.ts";
+import { Item } from "../../models/Item.ts";
+import { ItemDetail } from "../../components/item-detail/ItemDetail.tsx";
 
 export const Home = () =>
 {
-
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [selectedItem, setSelectedItem] = useState<Item | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() =>
   {
@@ -33,14 +35,23 @@ export const Home = () =>
         setError(err.message);
         setLoading(false);
       });
-  })
+  }, []);
 
-  const renderProducts = (products: Item[]) =>{
+  const handleItemClick = (item: Item) => {
+    setSelectedItem(item);
+    setIsModalOpen(true);
+  };
+
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const renderProducts = (items: Item[]) =>{
     return (
       <>
-        {products.map((item: Item, index) => (
+        {items.map((item: Item, index) => (
           <div className="col-2" key={index}>
-            <Card item={item} />
+            <Card item={item} onClick={() => handleItemClick(item)} />
           </div>
         ))}
       </>
@@ -59,6 +70,7 @@ export const Home = () =>
           </div>
         </div>
       </div>
+      <ItemDetail item={selectedItem} isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
   )
 }

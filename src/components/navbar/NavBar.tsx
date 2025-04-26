@@ -1,6 +1,6 @@
-import {NavLink} from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import { NavItem } from "../../models/NavItem.ts";
 import "./NavBar.css"
-import {NavItem} from "../../models/NavItem.ts";
 
 type renderNavProps = {
   itemsNavMain?: NavItem[];
@@ -9,7 +9,8 @@ type renderNavProps = {
   cartItemCount?: number;
 };
 
-const renderNav = ({ itemsNavMain, itemsNavUser, itemsNavCategories, cartItemCount = 0 }: renderNavProps) => {
+const renderNav = ({ itemsNavMain, itemsNavUser, itemsNavCategories, cartItemCount = 0 }: renderNavProps) =>
+{
   const itemsNav = [...(itemsNavMain || []), ...(itemsNavUser || []), ...(itemsNavCategories || [])];
 
   return (
@@ -50,7 +51,6 @@ const renderNav = ({ itemsNavMain, itemsNavUser, itemsNavCategories, cartItemCou
     </>
   );
 };
-
 
 type NavBarProps = {
   brand: string

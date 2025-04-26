@@ -1,9 +1,17 @@
-import {Item} from "../models/Item.ts";
+import { Item } from "../models/Item.ts";
 
-export const mapUserResponse = (data: any[]): Item[] => {
+type ApiItem = {
+  title: string;
+  price: number;
+  description: string;
+  images: string[];
+}
+
+export const mapUserResponse = (data: ApiItem[]): Item[] => {
   return data.map(item => ({
     name: item.title,
     price: item.price,
-    imageUrl: item.images?.[0] ?? './src/assets/default-product.png',
+    description: item.description,
+    imageUrl: item.images[0] ?? './src/assets/default-product.png',
   }));
 };
