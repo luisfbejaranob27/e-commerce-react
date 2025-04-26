@@ -20,7 +20,7 @@ export const Card = ({item, onClick}: CardProps) =>
       <div className="card-body">
         <h5 className="card-title">{name}</h5>
         <p className="card-text">
-          <i className="bi bi-cash"></i> = {price} USD
+          <i className="bi bi-cash"></i> = {price}
         </p>
       </div>
     </div>

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { Item } from '../../models/Item.ts';
 import './ItemDetail.css';
 
@@ -9,11 +10,28 @@ interface ItemDetailProps {
 
 export const ItemDetail = ({ item, isOpen, onClose }: ItemDetailProps) =>
 {
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() =>
+  {
+    if (isOpen)
+    {
+      setTimeout(() =>
+      {
+        setIsVisible(true);
+      }, 10);
+    }
+    else
+    {
+      setIsVisible(false);
+    }
+  }, [isOpen]);
+
   if (!item) return null;
 
   return (
     <div
-      className={`modal fade ${isOpen ? 'show' : ''}`}
+      className={`modal fade ${isVisible ? 'show' : ''}`}
       style={{ display: isOpen ? 'block' : 'none' }}
       tabIndex={-1}
       role="dialog"
