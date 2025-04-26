@@ -10,28 +10,24 @@ import {Cart} from "./pages/cart/Cart.tsx";
 import {SignIn} from "./pages/sign-in/SignIn.tsx";
 import {SignOut} from "./pages/sign-out/SignOut.tsx";
 import './App.css'
+import {NavItem} from "./models/NavItem.ts";
 
 const AppRoutes = () =>
 {
   return useRoutes([
-    {path: '/', element: <Home/>},
-    {path: '/electronics', element: <Home/>},
-    {path: '/my-account', element: <Account/>},
-    {path: '/my-order', element: <Order/>},
-    {path: '/my-orders', element: <Orders/>},
-    {path: '/my-orders/last', element: <Order/>},
-    {path: '/my-orders/:id', element: <Order/>},
-    {path: '/my-cart/', element: <Cart/>},
-    {path: '/sign-in', element: <SignIn/>},
-    {path: '/sign-out', element: <SignOut/>},
-    {path: '/*', element: <NotFound/>},
+    { path: '/', element: <Home/> },
+    { path: '/electronics', element: <Home/> },
+    { path: '/my-account', element: <Account/> },
+    { path: '/my-order', element: <Order/> },
+    { path: '/my-orders', element: <Orders/> },
+    { path: '/my-orders/last', element: <Order/> },
+    { path: '/my-orders/:id', element: <Order/> },
+    { path: '/my-cart/', element: <Cart/> },
+    { path: '/sign-in', element: <SignIn/> },
+    { path: '/sign-out', element: <SignOut/> },
+    { path: '/*', element: <NotFound/> },
   ]);
 }
-
-type NavItem = {
-  name: string;
-  path: string;
-};
 
 const itemsNavMain: NavItem[] = [
   { name: 'Home', path: '/' },
@@ -55,7 +51,7 @@ export const App = () =>
 {
   return (
     <BrowserRouter>
-      <NavBar brand={"E Commerce"} itemsNavMain={itemsNavMain} itemsNavUser={itemsNavUser} itemsNavCategories={itemsNavCategories} />
+      <NavBar brand={"E Commerce"} itemsNavMain={itemsNavMain} itemsNavUser={itemsNavUser} cartItemCount={9} itemsNavCategories={itemsNavCategories} />
       <AppRoutes />
       <ThemeController />
     </BrowserRouter>

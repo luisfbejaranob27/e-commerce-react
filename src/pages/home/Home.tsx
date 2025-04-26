@@ -1,31 +1,61 @@
+import {useEffect, useState} from "react";
 import {Card} from "../../components/card/Card.tsx";
+import {mapUserResponse} from "../../utils/ItemMapper.ts";
+import {Item} from "../../models/Item.ts";
 
 export const Home = () =>
 {
+
+  const [items, setItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() =>
+  {
+    fetch("https://api.escuelajs.co/api/v1/products")
+      .then(res =>
+      {
+        if (!res.ok)
+        {
+          throw new Error(`Error ${res.status}: ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then(data =>
+      {
+        const items: Item[] = mapUserResponse(data);
+        setItems(items);
+        setLoading(false);
+      })
+      .catch(err =>
+      {
+        console.error("Error fetching users:", err);
+        setError(err.message);
+        setLoading(false);
+      });
+  })
+
+  const renderProducts = (products: Item[]) =>{
+    return (
+      <>
+        {products.map((item: Item, index) => (
+          <div className="col-2" key={index}>
+            <Card item={item} />
+          </div>
+        ))}
+      </>
+    )
+  }
+
   return (
     <div className="container-fluid neumorphism-div">
       <div className="row">
         <div className="col-12">
           <h2>List Products</h2>
-          <div className="row">
-            <div className="col-2">
-              <Card name={"Test"} price={100} />
-            </div>
-            <div className="col-2">
-              <Card name={"Test"} price={100} />
-            </div>
-            <div className="col-2">
-              <Card name={"Test"} price={100} />
-            </div>
-            <div className="col-2">
-              <Card name={"Test"} price={100} />
-            </div>
-            <div className="col-2">
-              <Card name={"Test"} price={100} />
-            </div>
-            <div className="col-2">
-              <Card name={"Test"} price={100} />
-            </div>
+          {loading && <p>Loading...</p>}
+          {error && <p className="text-danger">Error: {error}</p>}
+          <div id="products" className="row">
+            {renderProducts(items)}
           </div>
         </div>
       </div>

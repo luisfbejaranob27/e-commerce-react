@@ -1,12 +1,9 @@
 import "./Card.css"
+import {Item} from "../../models/Item.ts";
 
-type CardProps = {
-  name: string;
-  price: number;
-  imageUrl?: string;
-}
-
-export const Card = ({ name, price, imageUrl }: CardProps) => {
+export const Card = ({ item }: { item: Item }) =>
+{
+  const { name, price, imageUrl } = item;
   const imageSrc = imageUrl ?? "./src/assets/default-product.png";
 
   return (
