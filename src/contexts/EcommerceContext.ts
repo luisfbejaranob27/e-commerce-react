@@ -1,5 +1,7 @@
 import { createContext } from 'react';
 import { CartItem } from "../models/CartItem.ts";
+import { Order } from "../models/Order.ts";
+import {PaymentMethod} from "../enums/PaymentMethod.ts";
 
 type EcommerceContextType = {
   cartItems: CartItem[];
@@ -7,6 +9,9 @@ type EcommerceContextType = {
   updateCartItemQuantity: (item: CartItem, newQuantity: number) => void;
   removeFromCart: (item: CartItem) => void;
   cartItemCount: number;
+  orders: Order[];
+  confirmOrder: (userId: string, shippingAddress: string, paymentMethod: PaymentMethod) => void;
+  getPaymentMethodName: (method: PaymentMethod) => string;
 }
 
 export const EcommerceContext = createContext<EcommerceContextType>({
@@ -14,5 +19,8 @@ export const EcommerceContext = createContext<EcommerceContextType>({
   addToCart: () => {},
   updateCartItemQuantity: () => {},
   removeFromCart: () => {},
-  cartItemCount: 0
+  cartItemCount: 0,
+  orders: [],
+  confirmOrder: () => {},
+  getPaymentMethodName: () => "",
 });
