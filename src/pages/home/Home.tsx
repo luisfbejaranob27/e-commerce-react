@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { Card } from "../../components/card/Card.tsx";
+import { Card } from "./components/card/Card.tsx";
 import { mapUserResponse } from "../../utils/ItemMapper.ts";
 import { Item } from "../../models/Item.ts";
-import { ItemDetail } from "../../components/item-detail/ItemDetail.tsx";
+import { ItemDetail } from "./components/item-detail/ItemDetail.tsx";
 
 export const Home = () =>
 {

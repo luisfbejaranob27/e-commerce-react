@@ -1,7 +1,7 @@
 import { useContext } from "react";
-import { Item } from "../../models/Item.ts";
-import { CartItem } from "../../models/CartItem.ts";
-import { EcommerceContext } from "../../contexts/EcommerceContext.ts";
+import { Item } from "../../../../models/Item.ts";
+import { CartItem } from "../../../../models/CartItem.ts";
+import { EcommerceContext } from "../../../../contexts/EcommerceContext.ts";
 import "./Card.css"
 
 type CardProps = {

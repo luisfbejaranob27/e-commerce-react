@@ -1,8 +1,8 @@
 import {useContext, useEffect, useState} from 'react';
-import { Item } from '../../models/Item.ts';
+import { Item } from '../../../../models/Item.ts';
 import './ItemDetail.css';
-import {EcommerceContext} from "../../contexts/EcommerceContext.ts";
-import {CartItem} from "../../models/CartItem.ts";
+import {EcommerceContext} from "../../../../contexts/EcommerceContext.ts";
+import {CartItem} from "../../../../models/CartItem.ts";
 
 interface ItemDetailProps {
   item: Item | null;
