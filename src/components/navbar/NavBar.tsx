@@ -1,3 +1,5 @@
+import { useContext } from "react";
+import { EcommerceContext } from "../../contexts/EcommerceContext.ts";
 import { NavLink } from "react-router-dom";
 import { NavItem } from "../../models/NavItem.ts";
 import "./NavBar.css"
@@ -9,9 +11,10 @@ type renderNavProps = {
   cartItemCount?: number;
 };
 
-const renderNav = ({ itemsNavMain, itemsNavUser, itemsNavCategories, cartItemCount = 0 }: renderNavProps) =>
+const renderNav = ({ itemsNavMain, itemsNavUser, itemsNavCategories, cartItemCount }: renderNavProps) =>
 {
   const itemsNav = [...(itemsNavMain || []), ...(itemsNavUser || []), ...(itemsNavCategories || [])];
+  const cartCount = cartItemCount || 0;
 
   return (
     <>
@@ -31,12 +34,12 @@ const renderNav = ({ itemsNavMain, itemsNavUser, itemsNavCategories, cartItemCou
                 {item.name === 'Cart' ? (
                   <div className="position-relative d-inline-block">
                     <i className="bi bi-cart"></i>
-                    {cartItemCount > 0 && (
+                    {cartCount > 0 && (
                       <span
                         className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
                         style={{fontSize: '0.6rem'}}
                       >
-                        {cartItemCount}
+                        {cartCount}
                       </span>
                     )}
                   </div>
@@ -57,11 +60,11 @@ type NavBarProps = {
   itemsNavMain: NavItem[]
   itemsNavUser: NavItem[]
   itemsNavCategories: NavItem[]
-  cartItemCount: number;
 }
 
-export const NavBar = ({ brand, itemsNavMain, itemsNavUser, itemsNavCategories, cartItemCount }: NavBarProps) =>
-{
+export const NavBar = ({ brand, itemsNavMain, itemsNavUser, itemsNavCategories }: NavBarProps) => {
+  const context = useContext(EcommerceContext);
+
   return (
     <>
       <nav>
@@ -75,7 +78,7 @@ export const NavBar = ({ brand, itemsNavMain, itemsNavUser, itemsNavCategories, 
             </div>
             <div className="col-5">
               <ul className="nav justify-content-end">
-                {renderNav({itemsNavUser, cartItemCount})}
+                {renderNav({itemsNavUser, cartItemCount: context.cartItemCount})}
               </ul>
             </div>
           </div>

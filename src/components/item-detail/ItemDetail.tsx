@@ -1,6 +1,8 @@
-import { useEffect, useState } from 'react';
+import {useContext, useEffect, useState} from 'react';
 import { Item } from '../../models/Item.ts';
 import './ItemDetail.css';
+import {EcommerceContext} from "../../contexts/EcommerceContext.ts";
+import {CartItem} from "../../models/CartItem.ts";
 
 interface ItemDetailProps {
   item: Item | null;
@@ -10,6 +12,7 @@ interface ItemDetailProps {
 
 export const ItemDetail = ({ item, isOpen, onClose }: ItemDetailProps) =>
 {
+  const context = useContext(EcommerceContext);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() =>
@@ -28,6 +31,11 @@ export const ItemDetail = ({ item, isOpen, onClose }: ItemDetailProps) =>
   }, [isOpen]);
 
   if (!item) return null;
+
+  const cartItem: CartItem = {
+    item: item,
+    quantity: 1,
+  }
 
   return (
     <div
@@ -56,7 +64,7 @@ export const ItemDetail = ({ item, isOpen, onClose }: ItemDetailProps) =>
                 <h3 className="mb-3">{item.name}</h3>
                 <p className="fs-4 text-primary mb-4">${item.price.toFixed(2)}</p>
                 <p className="mb-4">{item.description}</p>
-                <button className="btn btn-primary me-2">
+                <button className="btn btn-primary me-2" onClick={(e) => { e.stopPropagation(); context.addToCart(cartItem) }}>
                   <i className="bi bi-cart-plus me-2"></i>Add to Cart
                 </button>
                 <button className="btn btn-outline-secondary">
