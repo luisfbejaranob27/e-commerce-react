@@ -1,6 +1,6 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { EcommerceContext } from "../../contexts/EcommerceContext.ts";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { NavItem } from "../../models/NavItem.ts";
 import "./NavBar.css"
 
@@ -62,8 +62,28 @@ type NavBarProps = {
   itemsNavCategories: NavItem[]
 }
 
-export const NavBar = ({ brand, itemsNavMain, itemsNavUser, itemsNavCategories }: NavBarProps) => {
-  const context = useContext(EcommerceContext);
+export const NavBar = ({ brand, itemsNavMain, itemsNavUser, itemsNavCategories }: NavBarProps) =>
+{
+  const { searchItems, cartItemCount} = useContext(EcommerceContext);
+  const [searchValue, setSearchValue] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearchSubmit = (e: React.FormEvent) =>
+  {
+    searchItems(searchValue);
+    e.preventDefault();
+    navigate(`/?search=${encodeURIComponent(searchValue)}`);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setSearchValue(newValue);
+
+    if (newValue === "") {
+      searchItems("");
+      navigate("/");
+    }
+  };
 
   return (
     <>
@@ -78,7 +98,7 @@ export const NavBar = ({ brand, itemsNavMain, itemsNavUser, itemsNavCategories }
             </div>
             <div className="col-5">
               <ul className="nav justify-content-end">
-                {renderNav({itemsNavUser, cartItemCount: context.cartItemCount})}
+                {renderNav({itemsNavUser, cartItemCount: cartItemCount})}
               </ul>
             </div>
           </div>
@@ -88,8 +108,15 @@ export const NavBar = ({ brand, itemsNavMain, itemsNavUser, itemsNavCategories }
             </ul>
           </div>
           <div className="collapse" id="collapseSearch">
-            <form role="search">
-              <input className="form-control col-3" type="search" placeholder="Search" aria-label="Search"/>
+            <form role="search" onSubmit={handleSearchSubmit}>
+              <input
+                className="form-control col-3"
+                type="search"
+                placeholder="Search"
+                aria-label="Search"
+                value={searchValue}
+                onChange={handleSearchChange}
+              />
             </form>
           </div>
         </div>

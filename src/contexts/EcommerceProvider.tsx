@@ -1,14 +1,64 @@
-import { ReactNode, useState } from 'react';
+import { ReactNode, useCallback, useEffect, useState } from 'react';
 import { EcommerceContext } from './EcommerceContext.ts';
 import { CartItem } from "../models/CartItem.ts";
 import { Order } from '../models/Order.ts';
 import { PaymentMethod } from '../enums/PaymentMethod.ts';
 import { OrderStatus } from "../enums/OrderStatus.ts";
+import { Item } from "../models/Item.ts";
+import { mapUserResponse } from "../utils/ItemMapper.ts";
 
 export const EcommerceProvider = ({ children }: { children: ReactNode }) =>
 {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+
+  const [items, setItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [filteredItems, setFilteredItems] = useState<Item[]>([]);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  useEffect(() =>
+  {
+    fetch("https://api.escuelajs.co/api/v1/products")
+      .then(res =>
+      {
+        if (!res.ok)
+        {
+          throw new Error(`Error ${res.status}: ${res.statusText}`);
+        }
+        return res.json();
+      })
+      .then(data =>
+      {
+        const items: Item[] = mapUserResponse(data);
+        setItems(items);
+        setLoading(false);
+      })
+      .catch(err =>
+      {
+        console.error("Error fetching users:", err);
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  const searchItems = useCallback((term: string) => {
+    setSearchTerm(term);
+
+    if (!term.trim()) {
+      setFilteredItems(items);
+      return;
+    }
+
+    const searchTermLower = term.toLowerCase();
+    const filtered = items.filter(item =>
+      item.name?.toLowerCase().includes(searchTermLower) ||
+      item.description?.toLowerCase().includes(searchTermLower)
+    );
+
+    setFilteredItems(filtered);
+  }, [items]);
 
   const addToCart = (item: CartItem) =>
   {
@@ -105,7 +155,22 @@ export const EcommerceProvider = ({ children }: { children: ReactNode }) =>
   };
 
   return (
-    <EcommerceContext.Provider value={{ cartItems, addToCart, updateCartItemQuantity, removeFromCart, cartItemCount, orders, confirmOrder, getPaymentMethodName }}>
+    <EcommerceContext.Provider value={{
+      cartItems,
+      addToCart,
+      updateCartItemQuantity,
+      removeFromCart,
+      cartItemCount,
+      orders,
+      confirmOrder,
+      getPaymentMethodName,
+      items,
+      filteredItems,
+      loading,
+      error,
+      searchTerm,
+      searchItems,
+    }}>
       {children}
     </EcommerceContext.Provider>
   );

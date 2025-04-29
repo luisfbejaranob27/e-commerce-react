@@ -1,41 +1,23 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
+import { EcommerceContext } from "../../contexts/EcommerceContext.ts";
 import { Card } from "./components/card/Card.tsx";
-import { mapUserResponse } from "../../utils/ItemMapper.ts";
 import { Item } from "../../models/Item.ts";
 import { ItemDetail } from "./components/item-detail/ItemDetail.tsx";
 
 export const Home = () =>
 {
-  const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { filteredItems, items, loading, error, searchItems } = useContext(EcommerceContext);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  useEffect(() =>
-  {
-    fetch("https://api.escuelajs.co/api/v1/products")
-      .then(res =>
-      {
-        if (!res.ok)
-        {
-          throw new Error(`Error ${res.status}: ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then(data =>
-      {
-        const items: Item[] = mapUserResponse(data);
-        setItems(items);
-        setLoading(false);
-      })
-      .catch(err =>
-      {
-        console.error("Error fetching users:", err);
-        setError(err.message);
-        setLoading(false);
-      });
-  }, []);
+  const location = useLocation();
+
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const searchTerm = searchParams.get("search") || "";
+    searchItems(searchTerm);
+  }, [location.search, searchItems]);
 
   const handleItemClick = (item: Item) => {
     setSelectedItem(item);
@@ -46,7 +28,7 @@ export const Home = () =>
     setIsModalOpen(false);
   };
 
-  const renderProducts = (items: Item[]) =>{
+  const renderItems = (items: Item[]) =>{
     return (
       <>
         {items.map((item: Item, index) => (
@@ -55,8 +37,10 @@ export const Home = () =>
           </div>
         ))}
       </>
-    )
-  }
+    );
+  };
+
+  const displayItems = filteredItems.length > 0 ? filteredItems : items;
 
   return (
     <div className="container-fluid neumorphism-div">
@@ -66,7 +50,7 @@ export const Home = () =>
           {loading && <p>Loading...</p>}
           {error && <p className="text-danger">Error: {error}</p>}
           <div id="products" className="row">
-            {renderProducts(items)}
+            {renderItems(displayItems)}
           </div>
         </div>
       </div>
