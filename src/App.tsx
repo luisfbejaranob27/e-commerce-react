@@ -17,7 +17,6 @@ const AppRoutes = () =>
 {
   return useRoutes([
     { path: '/', element: <Home/> },
-    { path: '/electronics', element: <Home/> },
     { path: '/my-account', element: <Account/> },
     { path: '/my-order', element: <Order/> },
     { path: '/my-orders', element: <Orders/> },
@@ -25,6 +24,8 @@ const AppRoutes = () =>
     { path: '/sign-in', element: <SignIn/> },
     { path: '/sign-out', element: <SignOut/> },
     { path: '/*', element: <NotFound/> },
+    { path: '/electronics', element: <Home/> },
+    { path: '/clothes', element: <Home/> },
   ]);
 }
 

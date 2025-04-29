@@ -10,14 +10,31 @@ export const Home = () =>
   const { filteredItems, items, loading, error, searchItems } = useContext(EcommerceContext);
   const [selectedItem, setSelectedItem] = useState<Item | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [categoryItems, setCategoryItems] = useState<Item[]>([]);
 
   const location = useLocation();
+  const currentPath = location.pathname.slice(1);
 
   useEffect(() => {
     const searchParams = new URLSearchParams(location.search);
     const searchTerm = searchParams.get("search") || "";
     searchItems(searchTerm);
   }, [location.search, searchItems]);
+
+  useEffect(() => {
+    const pageRoutes = ["my-account", "my-order", "my-orders", "my-cart", "sign-in", "sign-out"];
+
+    const itemsToShow = filteredItems.length > 0 ? filteredItems : items;
+
+    if (currentPath === "" || pageRoutes.includes(currentPath)) {
+      setCategoryItems(itemsToShow);
+    } else {
+      const filtered = itemsToShow.filter(
+        item => item.category.toLowerCase() === currentPath.toLowerCase()
+      );
+      setCategoryItems(filtered);
+    }
+  }, [currentPath, items, filteredItems]);
 
   const handleItemClick = (item: Item) => {
     setSelectedItem(item);
@@ -28,7 +45,7 @@ export const Home = () =>
     setIsModalOpen(false);
   };
 
-  const renderItems = (items: Item[]) =>{
+  const renderItems = (items: Item[]) => {
     return (
       <>
         {items.map((item: Item, index) => (
@@ -40,21 +57,22 @@ export const Home = () =>
     );
   };
 
-  const displayItems = filteredItems.length > 0 ? filteredItems : items;
-
   return (
     <div className="container-fluid neumorphism-div">
       <div className="row">
         <div className="col-12">
-          <h2>List Products</h2>
+          <h2>
+            {currentPath ? `${currentPath.charAt(0).toUpperCase() + currentPath.slice(1)}` : "All Products"}
+          </h2>
           {loading && <p>Loading...</p>}
           {error && <p className="text-danger">Error: {error}</p>}
           <div id="products" className="row">
-            {renderItems(displayItems)}
+            {renderItems(categoryItems)}
           </div>
         </div>
       </div>
       <ItemDetail item={selectedItem} isOpen={isModalOpen} onClose={handleCloseModal} />
     </div>
-  )
-}
+  );
+};
+

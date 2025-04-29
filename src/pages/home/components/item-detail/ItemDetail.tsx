@@ -62,6 +62,7 @@ export const ItemDetail = ({ item, isOpen, onClose }: ItemDetailProps) =>
               </div>
               <div className="col-md-6">
                 <h3 className="mb-3">{item.name}</h3>
+                <p className="text-muted mb-2">{item.category}</p>
                 <p className="fs-4 text-primary mb-4">${item.price.toFixed(2)}</p>
                 <p className="mb-4">{item.description}</p>
                 <button className="btn btn-primary me-2" onClick={(e) => { e.stopPropagation(); context.addToCart(cartItem) }}>
