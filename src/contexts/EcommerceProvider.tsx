@@ -1,58 +1,14 @@
-import { ReactNode, useCallback, useEffect, useState } from 'react';
+import { ReactNode, useState } from 'react';
 import { EcommerceContext } from './EcommerceContext.ts';
 import { CartItem } from "../models/CartItem.ts";
 import { Order } from '../models/Order.ts';
 import { PaymentMethod } from '../enums/PaymentMethod.ts';
 import { OrderStatus } from "../enums/OrderStatus.ts";
-import { Item } from "../models/Item.ts";
-import { getAllItems } from "../services/ItemFetchService.ts";
 
 export const EcommerceProvider = ({ children }: { children: ReactNode }) =>
 {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
-
-  const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [filteredItems, setFilteredItems] = useState<Item[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() =>
-  {
-    const fetchItems = async () => {
-      try {
-        const itemsData = await getAllItems();
-        setItems(itemsData);
-        setFilteredItems(itemsData);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching items:", err);
-        setError(err instanceof Error ? err.message : "Error desconocido al cargar los productos");
-        setLoading(false);
-      }
-    };
-
-    fetchItems();
-  }, []);
-
-  const searchItems = useCallback((term: string) =>
-  {
-    setSearchTerm(term);
-
-    if (!term.trim()) {
-      setFilteredItems(items);
-      return;
-    }
-
-    const searchTermLower = term.toLowerCase();
-    const filtered = items.filter(item =>
-      item.name?.toLowerCase().includes(searchTermLower) ||
-      item.description?.toLowerCase().includes(searchTermLower)
-    );
-
-    setFilteredItems(filtered);
-  }, [items]);
 
   const addToCart = (item: CartItem) =>
   {
@@ -160,12 +116,6 @@ export const EcommerceProvider = ({ children }: { children: ReactNode }) =>
       orders,
       confirmOrder,
       getPaymentMethodName,
-      items,
-      filteredItems,
-      loading,
-      error,
-      searchTerm,
-      searchItems,
     }}>
       {children}
     </EcommerceContext.Provider>
