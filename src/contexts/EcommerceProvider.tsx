@@ -5,7 +5,7 @@ import { Order } from '../models/Order.ts';
 import { PaymentMethod } from '../enums/PaymentMethod.ts';
 import { OrderStatus } from "../enums/OrderStatus.ts";
 import { Item } from "../models/Item.ts";
-import { mapUserResponse } from "../utils/ItemMapper.ts";
+import { getAllItems } from "../services/ItemFetchService.ts";
 
 export const EcommerceProvider = ({ children }: { children: ReactNode }) =>
 {
@@ -14,36 +14,30 @@ export const EcommerceProvider = ({ children }: { children: ReactNode }) =>
 
   const [items, setItems] = useState<Item[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
   const [filteredItems, setFilteredItems] = useState<Item[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() =>
   {
-    fetch("https://api.escuelajs.co/api/v1/products")
-      .then(res =>
-      {
-        if (!res.ok)
-        {
-          throw new Error(`Error ${res.status}: ${res.statusText}`);
-        }
-        return res.json();
-      })
-      .then(data =>
-      {
-        const items: Item[] = mapUserResponse(data);
-        setItems(items);
+    const fetchItems = async () => {
+      try {
+        const itemsData = await getAllItems();
+        setItems(itemsData);
+        setFilteredItems(itemsData);
         setLoading(false);
-      })
-      .catch(err =>
-      {
-        console.error("Error fetching users:", err);
-        setError(err.message);
+      } catch (err) {
+        console.error("Error fetching items:", err);
+        setError(err instanceof Error ? err.message : "Error desconocido al cargar los productos");
         setLoading(false);
-      });
+      }
+    };
+
+    fetchItems();
   }, []);
 
-  const searchItems = useCallback((term: string) => {
+  const searchItems = useCallback((term: string) =>
+  {
     setSearchTerm(term);
 
     if (!term.trim()) {
@@ -83,7 +77,8 @@ export const EcommerceProvider = ({ children }: { children: ReactNode }) =>
     }
   };
 
-  const updateCartItemQuantity = (item: CartItem, newQuantity: number) => {
+  const updateCartItemQuantity = (item: CartItem, newQuantity: number) =>
+  {
     if (newQuantity <= 0)
     {
       removeFromCart(item);
@@ -135,7 +130,8 @@ export const EcommerceProvider = ({ children }: { children: ReactNode }) =>
 
   const cartItemCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
 
-  const getPaymentMethodName = (method: PaymentMethod): string => {
+  const getPaymentMethodName = (method: PaymentMethod): string =>
+  {
     switch (method) {
       case PaymentMethod.CREDIT_CARD:
         return "Credit card";
