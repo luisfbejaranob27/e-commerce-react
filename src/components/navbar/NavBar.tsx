@@ -1,6 +1,8 @@
-import { useContext, useState } from "react";
+import * as React from "react";
+import { useState } from "react";
+import { useContext } from "react";
 import { EcommerceContext } from "../../contexts/EcommerceContext.ts";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { NavItem } from "../../models/NavItem.ts";
 import "./NavBar.css"
 
@@ -64,24 +66,43 @@ type NavBarProps = {
 
 export const NavBar = ({ brand, itemsNavMain, itemsNavUser, itemsNavCategories }: NavBarProps) =>
 {
-  const { searchItems, cartItemCount} = useContext(EcommerceContext);
+  const { cartItemCount } = useContext(EcommerceContext);
   const [searchValue, setSearchValue] = useState("");
   const navigate = useNavigate();
+  const location = useLocation();
+  const currentPath = location.pathname.slice(1);
+
+  const pageRoutes = ["my-account", "my-order", "my-orders", "my-cart", "sign-in", "sign-out"];
 
   const handleSearchSubmit = (e: React.FormEvent) =>
   {
-    searchItems(searchValue);
     e.preventDefault();
-    navigate(`/?search=${encodeURIComponent(searchValue)}`);
+
+    if (currentPath && !pageRoutes.includes(currentPath))
+    {
+      navigate(`/${currentPath}?search=${encodeURIComponent(searchValue)}`);
+    }
+    else
+    {
+      navigate(`/?search=${encodeURIComponent(searchValue)}`);
+    }
   };
 
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+  {
     const newValue = e.target.value;
     setSearchValue(newValue);
 
-    if (newValue === "") {
-      searchItems("");
-      navigate("/");
+    if (newValue === "")
+    {
+      if (currentPath && !pageRoutes.includes(currentPath))
+      {
+        navigate(`/${currentPath}`);
+      }
+      else
+      {
+        navigate("/");
+      }
     }
   };
 

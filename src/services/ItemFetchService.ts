@@ -23,21 +23,38 @@ export const getItemsByCategory = async (category: string): Promise<Item[]> =>
 {
   try
   {
-    const url = category ? `${BASE_URL}?categorySlug=${encodeURIComponent(category)}` : BASE_URL;
-    const response = await axios.get(url);
+    const url = `${BASE_URL}?categorySlug=${encodeURIComponent(category)}`;
+    console.log(`Fetching items for category: ${category}, URL: ${url}`);
 
-    if (response.data && Array.isArray(response.data))
+    const response = await axios.get(url);
+    console.log('Response data structure:', JSON.stringify(response.data).substring(0, 200) + '...');
+
+    let itemsData: any[] = [];
+
+    if (Array.isArray(response.data))
     {
-      return mapUserResponse(response.data);
+      itemsData = response.data;
     }
     else if (response.data.products && Array.isArray(response.data.products))
     {
-      return mapUserResponse(response.data.products);
+      itemsData = response.data.products;
+    }
+    else if (response.data.items && Array.isArray(response.data.items))
+    {
+      itemsData = response.data.items;
     }
     else
     {
-      throw new ApiError('Unexpected data format', {});
+      console.error('Unexpected data format:', response.data);
+      return [];
     }
+
+    if (itemsData.length === 0)
+    {
+      console.warn(`No items found for category: ${category}`);
+    }
+
+    return mapUserResponse(itemsData);
   }
   catch (e)
   {
