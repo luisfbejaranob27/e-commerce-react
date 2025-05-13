@@ -1,3 +1,4 @@
+import * as React from "react";
 import {useContext, useEffect, useState} from 'react';
 import { Item } from '../../../../models/Item.ts';
 import './ItemDetail.css';
@@ -14,21 +15,39 @@ export const ItemDetail = ({ item, isOpen, onClose }: ItemDetailProps) =>
 {
   const context = useContext(EcommerceContext);
   const [isVisible, setIsVisible] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
+  const getItemIdentifier = (itemObj: Item): string =>
+  {
+    // Combinamos name y price para crear un identificador único
+    return `${itemObj.name}-${itemObj.price}`;
+  };
+
+  const getSavedItems = (): Item[] => {
+    const savedItemsJson = localStorage.getItem('savedItems');
+    return savedItemsJson ? JSON.parse(savedItemsJson) : [];
+  };
 
   useEffect(() =>
   {
-    if (isOpen)
-    {
+    if (isOpen) {
       setTimeout(() =>
       {
         setIsVisible(true);
       }, 10);
+
+      if (item)
+      {
+        const savedItems = getSavedItems();
+        const itemIdentifier = getItemIdentifier(item);
+        setIsSaved(savedItems.some(savedItem => getItemIdentifier(savedItem) === itemIdentifier));
+      }
     }
     else
     {
       setIsVisible(false);
     }
-  }, [isOpen]);
+  }, [isOpen, item]);
 
   if (!item) return null;
 
@@ -36,6 +55,29 @@ export const ItemDetail = ({ item, isOpen, onClose }: ItemDetailProps) =>
     item: item,
     quantity: 1,
   }
+
+  const toggleSaveItem = (e: React.MouseEvent) =>
+  {
+    e.stopPropagation();
+
+    const savedItems = getSavedItems();
+    const itemIdentifier = getItemIdentifier(item);
+
+    const itemIndex = savedItems.findIndex(savedItem => getItemIdentifier(savedItem) === itemIdentifier);
+
+    if (itemIndex >= 0)
+    {
+      savedItems.splice(itemIndex, 1);
+      setIsSaved(false);
+    }
+    else
+    {
+      savedItems.push(item);
+      setIsSaved(true);
+    }
+
+    localStorage.setItem('savedItems', JSON.stringify(savedItems));
+  };
 
   return (
     <div
@@ -68,8 +110,12 @@ export const ItemDetail = ({ item, isOpen, onClose }: ItemDetailProps) =>
                 <button className="btn btn-primary me-2" onClick={(e) => { e.stopPropagation(); context.addToCart(cartItem) }}>
                   <i className="bi bi-cart-plus me-2"></i>Add to Cart
                 </button>
-                <button className="btn btn-outline-secondary">
-                  <i className="bi bi-heart me-2"></i>Save
+                <button
+                  className={`btn ${isSaved ? 'btn-danger' : 'btn-outline-secondary'}`}
+                  onClick={toggleSaveItem}
+                >
+                  <i className={`bi ${isSaved ? 'bi-heart-fill' : 'bi-heart'} me-2`}></i>
+                  {isSaved ? 'Saved' : 'Save'}
                 </button>
               </div>
             </div>
